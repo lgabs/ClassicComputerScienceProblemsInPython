@@ -1,13 +1,15 @@
 import timeit
 import matplotlib.pyplot as plt
 
+
 def calculate_pi(n_terms: int) -> float:
     denominator: float = 1.0
     pi: float = 0.0
     for i in range(n_terms):
-        pi += (-1)** i * (4 / denominator)
+        pi += (-1) ** i * (4 / denominator)
         denominator += 2.0
     return pi
+
 
 def check_complexity():
     pis = []
@@ -22,6 +24,7 @@ def check_complexity():
     plt.plot(ns, time)
     plt.xlabel("number of terms"), plt.ylabel("Time taken (s)")
     plt.show()
+
 
 if __name__ == "__main__":
     print(calculate_pi(1000000))
