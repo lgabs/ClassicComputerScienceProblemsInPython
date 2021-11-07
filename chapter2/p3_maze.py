@@ -3,7 +3,7 @@ from typing import List, NamedTuple, Callable, Optional
 import random
 from math import sqrt
 
-from p2_generic_search import Node, dfs, node_to_path  # , bfs, astar
+from p2_generic_search import Node, dfs, node_to_path, bfs  # , astar
 
 
 class Cell(str, Enum):
@@ -108,7 +108,7 @@ if __name__ == "__main__":
     while True:
         # Test DFS
         m: Maze = Maze()  # initialize a ramdomly filled maze.
-        print("Let's solve this nice maze:")
+        print("--" * 30 + "\nLet's solve this nice maze:")
         print(m)
         input("Press enter to continue to our solution...")
         solution1: Optional[Node[MazeLocation]] = dfs(
@@ -119,8 +119,25 @@ if __name__ == "__main__":
         else:
             path1: List[MazeLocation] = node_to_path(solution1)
             m.mark(path1)
+            print("depth-first search:")
             print(m)
             m.clear(path1)
-        should_continue = input("Press 'Y' to run another test of 'Q' to quit:\n\n\n")
-        if should_continue == 'Q':
+
+        # Test BFS
+        solution2: Optional[Node[MazeLocation]] = bfs(
+            m.start, m.goal_test, m.successors
+        )
+        if solution2 is None:
+            print("No solution found using breadth-first search!")
+        else:
+            path2: List[MazeLocation] = node_to_path(solution2)
+            m.mark(path2)
+            print("breadth-first search:")
+            print(m)
+            m.clear(path2)
+
+        should_continue = input(
+            "--" * 30 + "\nPress 'Y' to run another test of 'Q' to quit:\n\n\n"
+        )
+        if should_continue == "Q":
             break
