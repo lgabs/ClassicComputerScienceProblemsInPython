@@ -11,6 +11,8 @@ from typing import (
     Dict,
     Any,
     Optional,
+    Union,
+    Tuple,
 )
 from typing_extensions import Protocol
 from heapq import heappush, heappop
@@ -131,8 +133,11 @@ class Node(Generic[T]):
 
 
 def dfs(
-    initial: T, goal_test: Callable[[T], bool], successors: Callable[[T], List[T]]
-) -> Optional[Node[T]]:
+    initial: T,
+    goal_test: Callable[[T], bool],
+    successors: Callable[[T], List[T]],
+    return_visited_states: bool = False,
+) -> Union[Optional[Node[T]], Tuple[Optional[Node[T]], int]]:
     """
     Generalized Deep-First Search Algorithm.
     """
@@ -141,15 +146,20 @@ def dfs(
     frontier.push(Node(initial, None))  # Set inicial state on frontier
     # explored is where we've been
     explored: Set[T] = {initial}  # We start already at initial state
+    visited_states: int = 0
 
     # keep going while there is more to explore
     while not frontier.empty:
         # remove the node from stack to analyze
         current_node: Node[T] = frontier.pop()
+        visited_states += 1  # add one more visited state
         current_state: T = current_node.state
         # if we found the goal, we're done
         if goal_test(current_state):
-            return current_node
+            if return_visited_states:
+                return (current_node, visited_states)
+            else:
+                return current_node
         # check where we can go next and haven't explored
         # remember that each successor is already a valid one
         # (ex: in maze problem, a blocked cell is not a valid successor)
@@ -157,7 +167,7 @@ def dfs(
             if child in explored:  # skip children we already explored
                 continue
             explored.add(child)
-            frontier.push(Node(child, current_node))
+            frontier.push(Node(child, current_node))  # add node to frontier
     return None  # went through everything and never found goal
 
 

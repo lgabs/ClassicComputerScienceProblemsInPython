@@ -67,6 +67,6 @@ if __name__ == "__main__":
     ax[1].set_title("Binary Search")
     ax[1].set_xlabel("Time (ms)")
     ax[1].legend()
-    
+
     plt.suptitle(f"Different times to search numbers\nin a {LIST_SIZE} size list")
     plt.show()
