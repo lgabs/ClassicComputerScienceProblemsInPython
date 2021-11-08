@@ -137,7 +137,7 @@ def dfs(
     goal_test: Callable[[T], bool],
     successors: Callable[[T], List[T]],
     return_visited_states: bool = False,
-) -> Union[Optional[Node[T]], Tuple[Optional[Node[T]], int]]:
+) -> Optional[Node[T]]:
     """
     Generalized Deep-First Search Algorithm.
     """
@@ -156,10 +156,7 @@ def dfs(
         current_state: T = current_node.state
         # if we found the goal, we're done
         if goal_test(current_state):
-            if return_visited_states:
-                return (current_node, visited_states)
-            else:
-                return current_node
+            return (current_node, visited_states)
         # check where we can go next and haven't explored
         # remember that each successor is already a valid one
         # (ex: in maze problem, a blocked cell is not a valid successor)
@@ -168,7 +165,7 @@ def dfs(
                 continue
             explored.add(child)
             frontier.push(Node(child, current_node))  # add node to frontier
-    return None  # went through everything and never found goal
+    return (None, None)  # went through everything and never found goal
 
 
 def bfs(
@@ -176,7 +173,7 @@ def bfs(
     goal_test: Callable[[T], bool],
     successors: Callable[[T], List[T]],
     return_visited_states: bool = False,
-) -> Union[Optional[Node[T]], Tuple[Optional[Node[T]], int]]:
+) -> Optional[Node[T]]:
     """
     Generalized Breadth-First Search Algorithm.
     """
@@ -194,17 +191,14 @@ def bfs(
         current_state: T = current_node.state
         # if we found the goal, we're done
         if goal_test(current_state):
-            if return_visited_states:
-                return (current_node, visited_states)
-            else:
-                return current_node
+            return (current_node, visited_states)
         # check where we can go next and haven't explored
         for child in successors(current_state):
             if child in explored:  # skip children we already explored
                 continue
             explored.add(child)
             frontier.push(Node(child, current_node))
-    return None  # went through everything and never found goal
+    return (None, None)  # went through everything and never found goal
 
 
 def astar(
@@ -213,7 +207,7 @@ def astar(
     successors: Callable[[T], List[T]],
     heuristic: Callable[[T], float],
     return_visited_states: bool = False,
-) -> Union[Optional[Node[T]], Tuple[Optional[Node[T]], int]]:
+) -> Optional[Node[T]]:
     # frontier is where we've yet to go
     frontier: PriorityQueue[Node[T]] = PriorityQueue()
     frontier.push(Node(initial, None, 0.0, heuristic(initial)))
@@ -228,10 +222,7 @@ def astar(
         current_state: T = current_node.state
         # if we found the goal, we're done
         if goal_test(current_state):
-            if return_visited_states:
-                return (current_node, visited_states)
-            else:
-                return current_node
+            return (current_node, visited_states)
         # check where we can go next and haven't explored
         for child in successors(current_state):
             new_cost: float = (
@@ -241,7 +232,7 @@ def astar(
             if child not in explored or explored[child] > new_cost:
                 explored[child] = new_cost
                 frontier.push(Node(child, current_node, new_cost, heuristic(child)))
-    return None  # went through everything and never found goal
+    return (None, None)  # went through everything and never found goal
 
 
 def node_to_path(node: Node[T]) -> List[T]:

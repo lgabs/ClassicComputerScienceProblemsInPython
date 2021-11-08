@@ -129,9 +129,9 @@ if __name__ == "__main__":
         print("--" * 30 + "\nLet's solve this nice maze:")
         print(m)
         input("Press enter to continue to our solution...")
-        solution1: Optional[Node[MazeLocation]] = dfs(
-            m.start, m.goal_test, m.successors
-        )
+        solution1: Optional[Node[MazeLocation]]
+        states: int
+        solution1, states = dfs(m.start, m.goal_test, m.successors)
         if solution1 is None:
             print("No solution found using depth-first search!")
         else:
@@ -142,9 +142,9 @@ if __name__ == "__main__":
             m.clear(path1)
 
         # Test BFS
-        solution2: Optional[Node[MazeLocation]] = bfs(
-            m.start, m.goal_test, m.successors
-        )
+        solution2: Optional[Node[MazeLocation]]
+        states: int
+        solution2, states = bfs(m.start, m.goal_test, m.successors)
         if solution2 is None:
             print("No solution found using breadth-first search!")
         else:
@@ -156,9 +156,9 @@ if __name__ == "__main__":
 
         # Test A*
         distance: Callable[[MazeLocation], float] = manhattan_distance(m.goal)
-        solution3: Optional[Node[MazeLocation]] = astar(
-            m.start, m.goal_test, m.successors, distance
-        )
+        solution3: Optional[Node[MazeLocation]]
+        states: int
+        solution3, states = astar(m.start, m.goal_test, m.successors, distance)
         if solution3 is None:
             print("No solution found using A*!")
         else:
