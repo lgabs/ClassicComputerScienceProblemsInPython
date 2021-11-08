@@ -3,7 +3,7 @@ from typing import List, NamedTuple, Callable, Optional
 import random
 from math import sqrt
 
-from p2_generic_search import Node, dfs, node_to_path, bfs, astar
+from generic_search import Node, dfs, node_to_path, bfs, astar
 
 
 class Cell(str, Enum):
