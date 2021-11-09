@@ -2,15 +2,16 @@ from __future__ import annotations
 from typing import List, Optional
 from generic_search import bfs, Node, node_to_path
 
-MAX_NUM: int = 3
+MISSIONARIES: int = 6
+CANNIBALS: int = 5
 
 
 class MCState:
     def __init__(self, missionaries: int, cannibals: int, boat: bool) -> None:
         self.wm: int = missionaries  # west bank missionaries
         self.wc: int = cannibals  # west bank cannibals
-        self.em: int = MAX_NUM - self.wm  # east bank missionaries
-        self.ec: int = MAX_NUM - self.wc  # east bank cannibals
+        self.em: int = MISSIONARIES - self.wm  # east bank missionaries
+        self.ec: int = CANNIBALS - self.wc  # east bank cannibals
         self.boat: bool = boat
 
     def __str__(self) -> str:
@@ -28,8 +29,19 @@ class MCState:
             return False
         return True
 
+    def __key(self):
+        return (self.wm, self.wc, self.em, self.ec, self.boat)
+
+    def __hash__(self):
+        return hash(self.__key())
+
+    def __eq__(self, other):
+        if isinstance(other, MCState):
+            return self.__key() == other.__key()
+        return NotImplemented
+
     def goal_test(self) -> bool:
-        return self.is_legal and self.em == MAX_NUM and self.ec == MAX_NUM
+        return self.is_legal and self.em == MISSIONARIES and self.ec == CANNIBALS
 
     def successors(self) -> List[MCState]:
         successors: List[MCState] = []
@@ -86,12 +98,14 @@ def display_solution(path: List[MCState]):
 
 
 if __name__ == "__main__":
-    start: MCState = MCState(MAX_NUM, MAX_NUM, True)
+    start: MCState = MCState(MISSIONARIES, CANNIBALS, True)
     solution: Optional[Node[MCState]]
     visited_states: int
-    solution, visited_states = bfs(start, MCState.goal_test, MCState.successors)
+    solution, visited_states = bfs(start, MCState.goal_test, MCState.successors, True)
     if solution is None:
         print("No solution found!")
     else:
         path: List[MCState] = node_to_path(solution)
         display_solution(path)
+
+    print("visited_states: ", visited_states)

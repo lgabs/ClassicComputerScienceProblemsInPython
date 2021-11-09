@@ -40,7 +40,7 @@ if __name__ == "__main__":
             astar_pathsizes.append(len(node_to_path(solution)))
             astar_states.append(n_states)
 
-    f, ax = plt.subplots(1, 2, figsize=(12,6))
+    f, ax = plt.subplots(1, 2, figsize=(12, 6))
 
     def plot_results(
         l: List[int], color: str, alpha: float, search_method: str, ax: plt.Axes

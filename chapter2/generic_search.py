@@ -16,6 +16,7 @@ from typing import (
 )
 from typing_extensions import Protocol
 from heapq import heappush, heappop
+import time
 
 T = TypeVar("T")
 
@@ -86,6 +87,9 @@ class Queue(Generic[T]):
     @property
     def empty(self) -> bool:
         return not self._container  # not is true for empty container
+
+    def __len__(self) -> bool:
+        return len(self._container)
 
     def push(self, item: T) -> None:
         self._container.append(item)
@@ -172,7 +176,7 @@ def bfs(
     initial: T,
     goal_test: Callable[[T], bool],
     successors: Callable[[T], List[T]],
-    return_visited_states: bool = False,
+    verbose: bool = False,
 ) -> Optional[Node[T]]:
     """
     Generalized Breadth-First Search Algorithm.
@@ -183,21 +187,41 @@ def bfs(
     # explored is where we've been
     explored: Set[T] = {initial}
     visited_states: int = 0
+    times: List[float] = []
+    skipped: int = 0
 
     # keep going while there is more to explore
     while not frontier.empty:
+        t1 = time.time()
         current_node: Node[T] = frontier.pop()  # takes from the left!
+        if verbose:  # and visited_states % 100000 == 0 and visited_states > 0:
+            print("Current Node:\n", current_node.state)
+            print("Visited states: ", visited_states)
+            print("States explored: ", len(explored))
+            print("Skipped states: ", skipped)
+            print(
+                "Average time per loop: ",
+                sum(times) / len(times) if len(times) > 0 else None,
+            )
+            print()
+            # input("Press enter to continue...")
         visited_states += 1  # add one more visited state
         current_state: T = current_node.state
         # if we found the goal, we're done
         if goal_test(current_state):
             return (current_node, visited_states)
         # check where we can go next and haven't explored
-        for child in successors(current_state):
+        successors_nodes = successors(current_state)
+        if verbose:
+            print("Number of successors: ", len(successors_nodes))
+            print("-" * 20)
+        for child in successors_nodes:
             if child in explored:  # skip children we already explored
+                skipped += 1
                 continue
             explored.add(child)
             frontier.push(Node(child, current_node))
+        times.append((time.time() - t1) * 1000)  # in ms
     return (None, None)  # went through everything and never found goal
 
 
