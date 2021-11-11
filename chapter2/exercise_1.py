@@ -35,7 +35,9 @@ def timed_binary_contains(iterable: Iterable[T], key: T) -> bool:
 
 
 def evaluate_search_times(
-    n_searches: int, search_function: Callable[[Iterable[T], T], bool], sort: bool = False
+    n_searches: int,
+    search_function: Callable[[Iterable[T], T], bool],
+    sort: bool = False,
 ):
     numbers: List[int] = [random.randint(0, MAX_NUMBER) for _ in range(LIST_SIZE)]
     if sort:
@@ -52,7 +54,9 @@ def evaluate_search_times(
 if __name__ == "__main__":
     n_searches = 1000
     times_from_linear = evaluate_search_times(n_searches, timed_linear_contains)
-    times_from_binary = evaluate_search_times(n_searches, timed_binary_contains, sort=True)
+    times_from_binary = evaluate_search_times(
+        n_searches, timed_binary_contains, sort=True
+    )
 
     # Times are very different, so we'll plot separately
     f, ax = plt.subplots(1, 2, figsize=(10, 6))
