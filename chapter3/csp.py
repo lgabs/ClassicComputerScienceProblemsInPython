@@ -65,4 +65,6 @@ class CSP(Generic[V, D]):
                 # if we didn't find the result, we will end up backtracking
                 if result is not None:
                     return result
+            else:
+                continue  # if we'not consistent, we continue
         return None

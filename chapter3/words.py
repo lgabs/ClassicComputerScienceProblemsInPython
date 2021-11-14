@@ -1,13 +1,39 @@
-from typing import NamedTuple, List, Dict, Optional
-from random import choice
+from typing import Coroutine, NamedTuple, List, Dict, Optional
+from random import choice, randint, random
 from string import ascii_uppercase
 from csp import CSP, Constraint
 
 Grid = List[List[str]]  # type alias for grids
 
 
-def colored_letter(letter: str) -> str:
-    return "\x1b[6;30;42m" + letter + "\x1b[0m"
+class Colors:
+    CBLACK = "\33[30m"
+    CRED = "\33[31m"
+    CGREEN = "\33[32m"
+    CYELLOW = "\33[33m"
+    CBLUE = "\33[34m"
+    CVIOLET = "\33[35m"
+    CBEIGE = "\33[36m"
+    CWHITE = "\33[37m"
+    ENDC = "\033[0m"
+
+    @classmethod
+    def random_color(self) -> str:
+        return choice(
+            [
+                self.CBLACK,
+                self.CBLUE,
+                self.CGREEN,
+                self.CRED,
+                self.CVIOLET,
+                self.CYELLOW,
+                self.CBEIGE,
+            ]
+        )
+
+
+def colored_letter(letter: str, color: str) -> str:
+    return color + letter + Colors.ENDC
 
 
 class GridLocation(NamedTuple):
@@ -66,6 +92,14 @@ if __name__ == "__main__":
     print("grid before: ")
     display_grid(grid)
     words: List[str] = ["MATTHEW", "JOE", "MARY", "SARAH", "SALLY"]
+    word_colors = [
+        Colors.CBEIGE,
+        Colors.CBLUE,
+        Colors.CGREEN,
+        Colors.CVIOLET,
+        Colors.CYELLOW,
+        Colors.CRED,
+    ]
     print("words:\n", words)
     locations: Dict[str, List[List[GridLocation]]] = {}
     for word in words:
@@ -82,6 +116,8 @@ if __name__ == "__main__":
                 grid_locations.reverse()
             for index, letter in enumerate(word):
                 (row, col) = (grid_locations[index].row, grid_locations[index].column)
-                grid[row][col] = colored_letter(letter)
+                grid[row][col] = colored_letter(
+                    letter=letter, color=word_colors[words.index(word)]
+                )
         print("\nlater:\n")
         display_grid(grid)
