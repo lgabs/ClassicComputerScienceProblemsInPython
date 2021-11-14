@@ -49,6 +49,7 @@ def generate_grid(rows: int, columns: int) -> Grid:
 def display_grid(grid: Grid) -> None:
     for row in grid:
         print("".join(row))
+    print()
 
 
 def generate_domain(word: str, grid: Grid) -> List[List[GridLocation]]:
@@ -92,7 +93,7 @@ if __name__ == "__main__":
     print("grid before: ")
     display_grid(grid)
     words: List[str] = ["MATTHEW", "JOE", "MARY", "SARAH", "SALLY"]
-    word_colors = [
+    word_colors: List[str] = [
         Colors.CBEIGE,
         Colors.CBLUE,
         Colors.CGREEN,
