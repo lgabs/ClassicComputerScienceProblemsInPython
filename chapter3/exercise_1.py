@@ -1,4 +1,3 @@
-from __future__ import annotations
 from typing import Coroutine, NamedTuple, List, Dict, Optional, Set
 from random import choice, randint, random
 from string import ascii_uppercase
@@ -98,9 +97,9 @@ class WordSearchConstraint(Constraint[str, List[GridLocation]]):
         separate_sums_len: int = sum(
             [len(v) for v in letters_map.values()]
         )  # sum of sets' lenght
-        jointed_sum_len: int = len(list(
-            set().union(*letters_map.values())
-        )) # join all sets before taking length
+        jointed_sum_len: int = len(
+            list(set().union(*letters_map.values()))
+        )  # join all sets before taking length
 
         return (
             separate_sums_len == jointed_sum_len
