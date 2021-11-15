@@ -74,14 +74,14 @@ def generate_domain(circuit: Circuit, grid: Grid) -> List[List[GridLocation]]:
     grid_height: int = len(grid)
     grid_width: int = len(grid[0])
 
-    # iterate thought circuit board
+    # iterate thought circuit layout
     # try to position looking from left upper position's of circuit
     # do not rotate circuits
     for row in range(grid_height):
         for col in range(grid_width):
-            columns: range = range(col, col + circuit.width + 1)
-            rows: range = range(row, row + circuit.height + 1)
-
+            columns: range = range(col, col + circuit.width )
+            rows: range = range(row, row + circuit.height)
+            locations = []
             if (
                 col + circuit.width <= grid_width
                 and row + circuit.height <= grid_height
@@ -89,9 +89,12 @@ def generate_domain(circuit: Circuit, grid: Grid) -> List[List[GridLocation]]:
                 for c in columns:
                     for r in rows:
                         # ideally we could avoid using inner spaces for performance
-                        domain.append([GridLocation(r, c)])
+                        locations.append(GridLocation(r, c))
+                domain.append(locations)
+            else:
+                continue
 
-        return domain
+    return domain
 
 
 class CircuitLayoutConstraint(Constraint[str, List[GridLocation]]):
@@ -110,14 +113,13 @@ if __name__ == "__main__":
     print("grid before: ")
     display_grid(grid)
     circuits: List[Circuit] = [
-        Circuit(1, 6),
+        Circuit(6, 1),
         Circuit(4, 4),
         Circuit(2, 2),
         Circuit(3, 3),
         Circuit(2, 5),
     ]
     circuit_colors: List[str] = [
-        Colors.CBEIGE,
         Colors.CBLUE,
         Colors.CGREEN,
         Colors.CVIOLET,
