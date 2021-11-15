@@ -1,6 +1,7 @@
 from csp import Constraint, CSP
 from typing import Dict, List, Optional
 
+
 class SendMoreMoneyConstraint(Constraint[str, int]):
     def __init__(self, letters: List[str]) -> None:
         super().__init__(letters)
@@ -25,8 +26,9 @@ class SendMoreMoneyConstraint(Constraint[str, int]):
             more: int = m * 1000 + o * 100 + r * 10 + e
             money: int = m * 10000 + o * 1000 + n * 100 + e * 10 + y
             return send + more == money
-        return True # no conflict
-    
+        return True  # no conflict
+
+
 def pretty_print_solution(solution: Optional[Dict[str, int]]) -> None:
     s: int = solution["S"]
     e: int = solution["E"]
@@ -39,9 +41,14 @@ def pretty_print_solution(solution: Optional[Dict[str, int]]) -> None:
     send: int = s * 1000 + e * 100 + n * 10 + d
     more: int = m * 1000 + o * 100 + r * 10 + e
     money: int = m * 10000 + o * 1000 + n * 100 + e * 10 + y
-    pretty_print = ' {:>12} (SEND)\n+{:>12} (MORE)\n-------------\n {:>12} (MONEY)\n'.format(send, more, money)
+    pretty_print = (
+        " {:>12} (SEND)\n+{:>12} (MORE)\n-------------\n {:>12} (MONEY)\n".format(
+            send, more, money
+        )
+    )
     print(pretty_print)
-    
+
+
 if __name__ == "__main__":
     letters: List[str] = ["S", "E", "N", "D", "M", "O", "R", "Y"]
     possible_digits: Dict[str, List[int]] = {}
