@@ -2,7 +2,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import Coroutine, NamedTuple, List, Dict, Optional, Set, Tuple
 from random import choice, randint, random
-from math import sqrt, ceil
+from math import sqrt, floor
 from csp import CSP, Constraint
 
 
@@ -37,7 +37,6 @@ class SudokuGrid:
             output += "\n"
             if (i + 1) % int(sqrt(self.dimension)) == 0:
                 output += "-" * (self.dimension + 2 + (steps - 1)) + "\n"
-        # output += "-" * (self.dimension + 2) + "\n"
 
         return output
 
@@ -49,6 +48,9 @@ class SudokuGrid:
             for i in range(self.dimension)
         ]
 
+    def preset_sudoku(self, grid: List[List[str]]):
+        self.grid = grid
+
     def generate_sudoku(self, sparseness: float = 0.80) -> None:
         # initialize empty grid and fill random positions
 
@@ -58,7 +60,7 @@ class SudokuGrid:
             else:
                 return str(randint(1, 9))
 
-        self.grid = [
+        self.grid: List[List[str]] = [
             [generate_digit() for j in range(self.dimension)]
             for i in range(self.dimension)
         ]
@@ -77,6 +79,7 @@ class SudokuConstraint(Constraint[SudokuCell, str]):
         super().__init__(cells)
         self.cells: List[str] = cells
         self.dimension = dimension
+        self.steps = sqrt(dimension)
 
     def satisfied(self, assignment: Dict[SudokuCell, str]) -> bool:
 
@@ -84,11 +87,14 @@ class SudokuConstraint(Constraint[SudokuCell, str]):
         cell_games: Dict[InnerGame, List[str]] = {}
         # for each cell, O(N)
         for cell, value in assignment.items():
-            cell_game: InnerGame = (ceil(cell.row), ceil(cell.column))
+            cell_game: InnerGame = InnerGame(
+                int(floor(cell.row / self.steps)), int(floor(cell.column / self.steps))
+            )
             if cell_game not in cell_games:
-                cell_games[InnerGame] = [value]
+                cell_games[cell_game] = [value]
             else:
-                cell_games[InnerGame].append(value)
+                cell_games[cell_game].append(value)
+
         # for each game
         for game, values in cell_games.items():
             if len(set(values)) != len(values):
@@ -96,13 +102,13 @@ class SudokuConstraint(Constraint[SudokuCell, str]):
 
         # for each row
         for row in range(self.dimension):
-            cells = [values for cell, values in assignment.items() if cell.row == row]
+            values = [values for cell, values in assignment.items() if cell.row == row]
             if len(set(values)) != len(values):
                 return False
 
         # for each column
         for column in range(self.dimension):
-            cells = [
+            values = [
                 values for cell, values in assignment.items() if cell.column == column
             ]
             if len(set(values)) != len(values):
@@ -117,7 +123,19 @@ def generate_domain() -> List[str]:
 
 if __name__ == "__main__":
     sudoku: SudokuGrid = SudokuGrid(9)
-    sudoku.generate_sudoku(sparseness=0.8)  # sudoku game with some filled
+    # sudoku.generate_sudoku(sparseness=0.8)  # sudoku game with some filled
+    preset_grid = [
+        ["8", "3", " ", "2", " ", "6", " ", " ", " "],
+        ["1", " ", " ", " ", "4", "5", " ", "9", " "],
+        ["9", " ", "6", "8", " ", "7", "5", " ", "2"],
+        [" ", " ", "4", " ", " ", " ", " ", "1", "8"],
+        ["2", " ", " ", "7", "5", " ", " ", " ", " "],
+        ["3", " ", "8", " ", "6", "1", "2", "5", "7"],
+        ["5", " ", " ", "1", " ", " ", " ", " ", "3"],
+        ["4", " ", " ", "6", " ", "9", " ", "8", " "],
+        ["6", " ", "9", " ", " ", "3", " ", "2", "4"],
+    ]
+    sudoku.preset_sudoku(preset_grid)
     print("before:\n")
     print(sudoku)
     domains: Dict[SudokuCell, List[str]] = {}
