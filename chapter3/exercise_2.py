@@ -79,7 +79,7 @@ def generate_domain(circuit: Circuit, grid: Grid) -> List[List[GridLocation]]:
     # do not rotate circuits
     for row in range(grid_height):
         for col in range(grid_width):
-            columns: range = range(col, col + circuit.width )
+            columns: range = range(col, col + circuit.width)
             rows: range = range(row, row + circuit.height)
             locations = []
             if (
@@ -97,12 +97,12 @@ def generate_domain(circuit: Circuit, grid: Grid) -> List[List[GridLocation]]:
     return domain
 
 
-class CircuitLayoutConstraint(Constraint[str, List[GridLocation]]):
+class CircuitLayoutConstraint(Constraint[Circuit, List[GridLocation]]):
     def __init__(self, circuits: List[Circuit]) -> None:
         super().__init__(circuits)
         self.circuits: List[str] = circuits
 
-    def satisfied(self, assignment: Dict[str, List[GridLocation]]) -> bool:
+    def satisfied(self, assignment: Dict[Circuit, List[GridLocation]]) -> bool:
         # if there are any duplicates grid locations, then there is an overlap
         all_locations = [locs for values in assignment.values() for locs in values]
         return len(set(all_locations)) == len(all_locations)
@@ -127,12 +127,12 @@ if __name__ == "__main__":
         Colors.CRED,
     ]
     print("circuits:\n", circuits)
-    locations: Dict[str, List[List[GridLocation]]] = {}
+    locations: Dict[Circuit, List[List[GridLocation]]] = {}
     for circuit in circuits:
         locations[circuit] = generate_domain(circuit, grid)
-    csp: CSP[str, List[GridLocation]] = CSP(circuits, locations)
+    csp: CSP[Circuit, List[GridLocation]] = CSP(circuits, locations)
     csp.add_constraint(CircuitLayoutConstraint(circuits))
-    solution: Optional[Dict[str, List[GridLocation]]] = csp.backtracking_search()
+    solution: Optional[Dict[Circuit, List[GridLocation]]] = csp.backtracking_search()
     if solution is None:
         print("No solution found!")
     else:
