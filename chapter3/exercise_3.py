@@ -25,7 +25,7 @@ class SudokuGrid:
         self.variables = []
 
     def __str__(self) -> str:
-        """return a nicely formatted version of the maze for printing"""
+        """return a nicely formatted version of the sudoku for printing"""
         steps = int(sqrt(self.dimension))
         output = ""
         output += "-" * (self.dimension + 2 + (steps - 1)) + "\n"
