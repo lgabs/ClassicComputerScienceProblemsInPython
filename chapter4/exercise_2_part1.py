@@ -154,20 +154,36 @@ if __name__ == "__main__":
     ]
 
     # test graph build
+    print("-" * 100 + "\nTest graph build")
     city_graph1 = build_graph(vertices, edges)
     print(city_graph1)
 
     # test graph's vertex removal
-    print("removing vertex 'Miami':")
+    print("-" * 100 + "\nTest removing vertex 'Miami'")
     _ = city_graph1.remove_vertex("Miami")
     print("after removal:")
     print(city_graph1)
 
     # 2. Test bfs
+    print("-" * 100 + "\nTest BFS")
     city_graph2 = build_graph(vertices, edges)
+    # Reuse BFS from chapter 2 on city_graph
+    import sys
 
-    # 3. Test mst
-    city_graph3 = build_graph(vertices, edges)
+    sys.path.insert(
+        0, ".."
+    )  # so we can access the Chapter2 package in the parent directory
+    from chapter2.generic_search import bfs, Node, node_to_path
 
-    # 4. test dijkstra
-    city_graph4 = build_graph(vertices, edges)
+    bfs_result: Optional[Node[V]]
+    visited_states: int
+    bfs_result, visited_states = bfs(
+        "Phoenix", lambda x: x == "Washington", city_graph2.neighbors_for_vertex
+    )
+    if bfs_result is None:
+        print("No solution found using breadth-first search!")
+    else:
+        path: List[V] = node_to_path(bfs_result)
+        print("Path from Boston to Miami:")
+        print(path)
+        print("visited states: ", visited_states)
