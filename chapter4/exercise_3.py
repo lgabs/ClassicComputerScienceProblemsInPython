@@ -109,3 +109,22 @@ if __name__ == "__main__":
     print("Does the graph has solution for bridge problem?")
     solution: bool = BridgeSolution(graph3)
     print("Answer: ", solution)
+    print("-" * 60)
+
+    print("Example of graph not connected:")
+    graph4: WeightedGraph[str] = WeightedGraph(
+        [
+            "land1",
+            "land2",
+            "land3",
+            "land4",
+        ]
+    )
+    graph4.add_edge_by_vertices("land1", "land2", "bridge 1")
+    graph4.add_edge_by_vertices("land1", "land3", "bridge 2")
+    graph4.add_edge_by_vertices("land2", "land3", "bridge 3")
+    print(graph4)
+
+    print("Does the graph has solution for bridge problem?")
+    solution: bool = BridgeSolution(graph4)
+    print("Answer: ", solution)
